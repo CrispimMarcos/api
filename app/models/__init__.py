@@ -1,5 +1,5 @@
 # models/__init__.py
-from .base import Base
+from app.database import Base
 from .user import User
 from .client import Client
 from .product import Product
