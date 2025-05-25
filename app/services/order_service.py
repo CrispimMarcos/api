@@ -21,3 +21,8 @@ def create_order(order_data, db_session):
             print(f"Erro notificando cliente no WhatsApp: {e}")
 
     return novo_pedido
+
+
+def get_orders(db_session):
+    # Aqui você faz a lógica para buscar os pedidos
+    return db_session.query(Order).all()

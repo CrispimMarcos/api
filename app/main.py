@@ -21,7 +21,7 @@ app.add_middleware(
 # Criação das tabelas (ou migrações com Alembic, recomendado)
 Base.metadata.create_all(bind=engine)
 
-# Incluindo routers
+# Incluindo router
 app.include_router(auth_routes.router, prefix="/auth", tags=["Autenticação"])
 app.include_router(client_routes.router, prefix="/clients", tags=["Clientes"])
 app.include_router(product_routes.router, prefix="/products", tags=["Produtos"])

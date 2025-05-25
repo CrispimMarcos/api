@@ -1,9 +1,9 @@
 # routers/orders.py
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from database import get_db
-from schemas.order import OrderCreate, OrderOut
-from services.order_service import create_order, get_orders
+from app.database import get_db
+from app.schemas.order import OrderCreate, OrderOut
+from app.services.order_service import create_order, get_orders
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 

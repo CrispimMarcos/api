@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Table
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from models.base import Base
+from app.models.base import Base
 
 order_products = Table(
     "order_products",
