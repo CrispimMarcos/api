@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     WHATSAPP_INSTANCE_ID: str
     WHATSAPP_API_TOKEN: str
     WHATSAPP_BASE_URL: str
+    DNS: str ="https://62c4957d0748b8e37841b37512fcf199@o4509388131729408.ingest.us.sentry.io/4509388136579072",
 
     class Config:
         env_file = ".env"

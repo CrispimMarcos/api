@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
+from app.auth.oauth2 import get_current_admin, get_current_user
 from app.database import get_db
 from app.schemas import Token, UserCreate, UserOut
 from app.auth.auth_service import authenticate_user, get_password_hash
 from app.auth.jwt_handler import create_access_token, decode_access_token
 from app.models.user_model import User
 
-router = APIRouter(prefix="/auth", tags=["Autenticação"])
+router = APIRouter()
 
 @router.post("/login", response_model=Token,
              summary="Autenticar usuário",
@@ -25,7 +25,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     return {"access_token": token, "token_type": "bearer"}
 
 @router.post("/register", response_model=UserOut,
-             summary="Registrar novo usuário")
+             summary="Registrar novo usuário", dependencies=[Depends(get_current_admin)])
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user_by_username = db.query(User).filter(User.username == user_data.username).first()
     if existing_user_by_username:
@@ -50,8 +50,8 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 @router.post("/refresh-token", response_model=Token,
-             summary="Atualizar token de acesso")
-def refresh_token(token: str = Depends(oauth2_scheme)):
+             summary="Atualizar token de acesso", dependencies=[Depends(get_current_admin)])
+def refresh_token(token: str = Depends(oauth2_scheme),):
     payload = decode_access_token(token)
     if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido ou expirado", headers={"WWW-Authenticate": "Bearer"})

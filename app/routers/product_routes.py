@@ -10,6 +10,7 @@ from app.services.product_service import (
     delete_product as service_delete_product,
 )
 from app.models.order_model import OrderItem
+from app.auth.oauth2 import get_current_user 
 
 router = APIRouter()
 
