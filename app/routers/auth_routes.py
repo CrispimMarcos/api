@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from app.auth.oauth2 import get_current_admin, get_current_user
+from app.auth.oauth2 import get_current_admin
 from app.database import get_db
 from app.schemas import Token, UserCreate, UserOut
 from app.auth.auth_service import authenticate_user, get_password_hash
@@ -25,7 +25,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     return {"access_token": token, "token_type": "bearer"}
 
 @router.post("/register", response_model=UserOut,
-             summary="Registrar novo usuário", dependencies=[Depends(get_current_admin)])
+             summary="Registrar novo usuário")
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user_by_username = db.query(User).filter(User.username == user_data.username).first()
     if existing_user_by_username:

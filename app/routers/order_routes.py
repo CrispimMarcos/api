@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.order_schema import OrderCreate, OrderOut, OrderUpdate
+from app.auth.oauth2 import get_current_admin
 from app.services.order_service import (
     create_order,
     get_orders,
@@ -57,7 +58,7 @@ def update_existing_order(order_id: int, order: OrderUpdate, db: Session = Depen
         sentry_sdk.capture_exception(e)
         raise HTTPException(status_code=500, detail="Erro ao atualizar o pedido.")
 
-@router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_admin)])
 def delete_existing_order(order_id: int, db: Session = Depends(get_db)):
     try:
         success = service_delete_order(db, order_id)

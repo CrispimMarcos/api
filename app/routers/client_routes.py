@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.client_schema import ClientCreate, ClientUpdate, ClientOut
+from app.auth.oauth2 import get_current_admin
+
 from app.services.client_service import (
     create_client,
     get_clients,
@@ -31,7 +33,7 @@ def read_client(client_id: int, db: Session = Depends(get_db)):
 def update(client_id: int, payload: ClientUpdate, db: Session = Depends(get_db)):
     return update_client(db, client_id, payload)
 
-@router.delete("/{client_id}")
+@router.delete("/{client_id}", dependencies=[Depends(get_current_admin)])
 def delete(client_id: int, db: Session = Depends(get_db)):
     delete_client(db, client_id)
     return {"message": "Cliente deletado com sucesso"}
