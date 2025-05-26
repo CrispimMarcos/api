@@ -1,17 +1,18 @@
 from pydantic import BaseSettings
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "API Lu Estilo"
-    VERSION: str = "1.0.0"
+    PROJECT_NAME: str
+    VERSION: str
     DATABASE_URL: str
     JWT_SECRET_KEY: str
-    JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    JWT_ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    DNS: str
     WHATSAPP_INSTANCE_ID: str
     WHATSAPP_API_TOKEN: str
     WHATSAPP_BASE_URL: str
-    DNS: str
 
     class Config:
-        env_file = ".env"  
+        env_file = ".env"
+
 settings = Settings()

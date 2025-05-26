@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:15
@@ -22,8 +20,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgresql://marcos:admin@db:5432/lu_estilo
+    env_file:
+      - ./app/.env  
 
 volumes:
   postgres_data:
