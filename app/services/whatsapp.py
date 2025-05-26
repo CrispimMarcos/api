@@ -1,29 +1,21 @@
 import requests
-from typing import Optional
-from fastapi import HTTPException
 from app.core.config import settings
+"""
+Função para enviar mensagens via WhatsApp usando a API Ultramsg, para enviar mensagem basta chamar esssa função em qualquer lugar do projeto.
+"""
 
-
-def send_message_via_whatsapp(phone_number: str, message: str) -> Optional[dict]:
-    url = f"https://graph.facebook.com/v17.0/{settings.WHATSAPP_PHONE_ID}/messages"
-
-    headers = {
-        "Authorization": f"Bearer {settings.WHATSAPP_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
+def send_whatsapp_message(to: str, message: str):
+    url = f"{settings.WHATSAPP_BASE_URL}/{settings.WHATSAPP_INSTANCE_ID}/messages/chat"
+    
     payload = {
-        "messaging_product": "whatsapp",
-        "to": phone_number,
-        "type": "text",
-        "text": {
-            "body": message
-        }
+        "token": settings.WHATSAPP_API_TOKEN,
+        "to": to,
+        "body": message
     }
 
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao enviar mensagem: {str(e)}")
+    response = requests.post(url, data=payload)
+    
+    if response.status_code != 200:
+        raise Exception(f"Erro ao enviar WhatsApp: {response.text}")
+    
+    return response.json()

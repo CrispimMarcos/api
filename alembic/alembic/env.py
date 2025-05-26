@@ -3,10 +3,10 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 from app.database import Base
-from app.models.client import Client
-from app.models.product import Product
-from app.models.order import Order
-from app.models.user import User
+from app.models.client_model import Client
+from app.models.product_model import Product
+from app.models.order_model import Order
+from app.models.user_model import User
 
 
 

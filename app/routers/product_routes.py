@@ -1,11 +1,16 @@
-# routers/products.py
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.schemas.product import ProductCreate, ProductOut
-from app.services.products import create_product, get_products
+from app.schemas.product_schema import ProductCreate, ProductOut, ProductUpdate
+from app.services.product_service import (
+    create_product,
+    get_products,
+    get_product_by_id,
+    update_product as service_update_product,
+    delete_product as service_delete_product,
+)
 
-router = APIRouter(prefix="/products", tags=["products"])
+router = APIRouter()
 
 @router.post("/", response_model=ProductOut)
 def create(product: ProductCreate, db: Session = Depends(get_db)):
@@ -15,27 +20,27 @@ def create(product: ProductCreate, db: Session = Depends(get_db)):
 def list_products(db: Session = Depends(get_db)):
     return get_products(db)
 
+@router.get("/{product_id}", response_model=ProductOut)
+def get_product(product_id: int, db: Session = Depends(get_db)):
+    db_product = get_product_by_id(db, product_id)
+    if db_product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+    return db_product
 
-from fastapi import APIRouter
+@router.put("/{product_id}", response_model=ProductOut)
+def update_product(
+    product_id: int,
+    product: ProductUpdate,
+    db: Session = Depends(get_db)
+):
+    db_product = service_update_product(db, product_id, product)
+    if db_product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para atualização")
+    return db_product
 
-router = APIRouter()
-
-@router.get("/")
-def get_products():
-    return {"message": "Get products endpoint"}
-
-@router.post("/")
-def create_product():
-    return {"message": "Create product endpoint"}
-
-@router.get("/{id}")
-def get_product(id: int):
-    return {"message": f"Get product {id} endpoint"}
-
-@router.put("/{id}")
-def update_product(id: int):
-    return {"message": f"Update product {id} endpoint"}
-
-@router.delete("/{id}")
-def delete_product(id: int):
-    return {"message": f"Delete product {id} endpoint"}
+@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    success = service_delete_product(db, product_id)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para exclusão")
+    return

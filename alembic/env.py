@@ -16,7 +16,7 @@ fileConfig(config.config_file_name)
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 target_metadata = Base.metadata
-from app.models import client, product, order, user  # exemplo de arquivos de models
+from app.models import client_model, order_model, product_model, user_model  # exemplo de arquivos de models
 
 def run_migrations_offline():
     context.configure(

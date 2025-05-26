@@ -4,10 +4,11 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.database import get_db
-from app.models.user import User
+from app.models.user_model import User
+from typing import Optional
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
+SECRET_KEY = settings.JWT_SECRET_KEY
 credentials_exception = HTTPException(
     status_code=401,
     detail="Não autorizado",
@@ -16,7 +17,7 @@ credentials_exception = HTTPException(
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
