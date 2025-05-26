@@ -1,4 +1,6 @@
 from pydantic import BaseSettings
+from pathlib import Path
+import os
 
 class Settings(BaseSettings):
     PROJECT_NAME: str

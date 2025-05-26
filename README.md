@@ -81,7 +81,9 @@ Desenvolvimento de uma API RESTful que:
 
 ---
 
-## 📤 Deploy com Docker
+## 📤 Deploy com Docker usando Railway
+
+## Teste usar o pytest
 
 ### Requisitos
 
