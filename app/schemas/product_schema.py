@@ -18,6 +18,7 @@ class ProductCreate(ProductBase):
 
 
 class ProductUpdate(BaseModel):
+    name: Optional[str] = None
     description: Optional[str] = None
     sale_price: Optional[int] = None
     barcode: Optional[str] = None

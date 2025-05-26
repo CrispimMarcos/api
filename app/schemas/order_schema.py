@@ -8,12 +8,13 @@ class OrderItemCreate(BaseModel):
     quantity: int = Field(..., gt=0, description="Quantidade do produto.", example=2)
 
 class OrderItemOut(BaseModel):
-    id: int = Field(..., description="ID do item do pedido.")
-    product_id: int = Field(..., description="ID do produto.")
-    quantity: int = Field(..., description="Quantidade do produto.")
+    id: int
+    product_id: int
+    quantity: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
+
 
 class OrderCreate(BaseModel):
     client_id: int = Field(..., description="ID do cliente que está fazendo o pedido.", example=101)
@@ -24,16 +25,16 @@ class OrderUpdate(BaseModel):
     status: Optional[str] = Field(None, description="Status do pedido (pending, completed, cancelled).", example="completed", pattern="^(pending|completed|cancelled)$")
 
 class OrderOut(BaseModel):
-    id: int = Field(..., description="ID único do pedido.")
-    client_id: int = Field(..., description="ID do cliente que fez o pedido.")
-    total: Decimal = Field(..., description="Valor total do pedido calculado.", example=150.75)
-    order_date: datetime = Field(..., description="Data e hora de criação do pedido (UTC).")
-    status: str = Field(..., description="Status atual do pedido.", example="pending")
-    items: List[OrderItemOut] = Field(..., description="Lista de itens detalhados no pedido.")
+    id: int
+    client_id: int
+    total: Decimal
+    order_date: datetime
+    status: str
+    items: List[OrderItemOut]
 
     class Config:
-        from_attributes = True
+        orm_mode = True
         json_encoders = {
             datetime: lambda dt: dt.isoformat(),
-            Decimal: lambda d: float(d)
+            Decimal: lambda d: float(d),
         }

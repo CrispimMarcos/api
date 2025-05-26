@@ -7,6 +7,8 @@ from app.schemas.order_schema import OrderCreate, OrderUpdate, OrderItemCreate
 from app.services.whatsapp import send_whatsapp_message
 from fastapi import HTTPException
 from decimal import Decimal
+from app.schemas.order_schema import OrderOut
+
 
 def create_order(db: Session, order_data: OrderCreate):
     db_order = Order(
@@ -46,7 +48,8 @@ def create_order(db: Session, order_data: OrderCreate):
         except Exception as e:
             print(f"Erro notificando cliente no WhatsApp: {e}")
 
-    return db_order
+    return OrderOut.from_orm(db_order)
+
 
 def get_orders(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Order).options(selectinload(Order.items)).offset(skip).limit(limit).all()
@@ -57,7 +60,7 @@ def get_order_by_id(db: Session, order_id: int):
 def update_order(db: Session, order_id: int, order_update: OrderUpdate):
     db_order = db.query(Order).filter(Order.id == order_id).first()
     if db_order:
-        update_data = order_update.model_dump(exclude_unset=True)
+        update_data = order_update.dict(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_order, key, value)
         db.add(db_order)

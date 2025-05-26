@@ -9,6 +9,7 @@ from app.services.product_service import (
     update_product as service_update_product,
     delete_product as service_delete_product,
 )
+from app.models.order_model import OrderItem
 
 router = APIRouter()
 
@@ -40,7 +41,15 @@ def update_product(
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id: int, db: Session = Depends(get_db)):
+    count = db.query(OrderItem).filter(OrderItem.product_id == product_id).count()
+    if count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Produto não pode ser excluído pois está em pedidos ativos."
+        )
     success = service_delete_product(db, product_id)
     if not success:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para exclusão")
-    return
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Produto não encontrado para exclusão"
+        )
