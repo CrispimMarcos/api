@@ -3,7 +3,6 @@ from app.core.config import settings
 """
 Função para enviar mensagens via WhatsApp usando a API Ultramsg, para enviar mensagem basta chamar esssa função em qualquer lugar do projeto.
 """
-
 def send_whatsapp_message(to: str, message: str):
     url = f"{settings.WHATSAPP_BASE_URL}/{settings.WHATSAPP_INSTANCE_ID}/messages/chat"
     
