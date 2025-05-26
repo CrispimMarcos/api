@@ -2,15 +2,20 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
-
+import python_multipart
 from app.main import app
 from app.database import Base, get_db
 
+
+@pytest.fixture
+def client():
+    return TestClient()
+
 # URL do banco de dados de teste (ajuste conforme seu setup)
-TEST_DATABASE_URL = "postgresql+psycopg2://marcos:admin@localhost:5432/lu_estilo"
+DATABASE_URL = "postgresql://marcos:admin@localhost:5432/lu_estilo"
 
 # Cria engine e sessionmaker para o banco de teste
-engine = create_engine(TEST_DATABASE_URL)
+engine = create_engine(DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture(scope="function")
