@@ -82,6 +82,7 @@ Desenvolvimento de uma API RESTful que:
 ---
 
 ## 📤 Deploy com Docker usando Railway
+- https://api-production-11a8.up.railway.app/docs
 
 ## Teste usar o pytest
 
